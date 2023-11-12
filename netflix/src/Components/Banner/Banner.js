@@ -1,23 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import {API_KEY,imageUrl} from '../../Constants/constants'
 import './Banner.css'
+import axios from '../../axios'
 
 function Banner() {
+  const [movie, setMovie] = useState([])
+  useEffect(()=>{
+    axios.get(`trending/all/week?api_key=${API_KEY}&language=en-US`).then((response)=>{
+      console.log(response.data.results[3])
+      setMovie(response.data.results[3])
+    }
+    )
+  },[]);
   return (
-    <div className='banner'>
+    <div style={{backgroundImage:`url(${movie ? imageUrl+movie.backdrop_path : ""})`}} className='banner'>
         <div className='content'>
-            <h1 className='title'>Movie Name</h1>
+            <h1 className='title'>{movie ? movie.name : ""}</h1>
             <div className='banner_buttons'>
                 <button className='button'>Play</button>
                 <button className='button'>My List</button>
             </div>
-            <h1 className='description'>Lorem ipsum is a pseudo-Latin text used in web design,
-             typography, layout, and printing in place of English to emphasise design elements over content.</h1>
+            <h1 className='description'>{movie ? movie.overview : ""}</h1>
         </div>
         <div className="fade_bottom">
             
         </div>
     </div>
   )
-}
+};
 
 export default Banner
